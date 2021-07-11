@@ -1,0 +1,44 @@
+\begin{abstract}
+In this paper we demonstrate an embedded DSL in python for building estimation algorithms using concepts in categorical probability and statistics.
+We base our work on the fundamentals of categorical probability theory as outlined in \cite{cho} and \cite{fritz}.
+We build up our language in the abstract using Python abstract base classes and utilizing infix operators.
+This language is is carefully designed to be reminiscent of notation used in calculating discrete probability, although the meaning behind this notation is much more general.
+We then demonstrate an implementation of this interface for the Gaussian probability case.
+Here, we implement the elemental axioms for a Markov category on linear transformations with additive Gaussian noise as discussed in \cite{fritz}.
+Then, we show how the Kalman filter propagation and update equations are derived and computed automatically in two elegant high-level programming statements that express the essence of a Bayes' rule through the lens of the aforementioned notation reminiscent of discrete probability.
+We show in a short comparison using simple example numbers that the auto-derived filter gives identical results to a Kalman filter whose propagation and update equations are hard-coded in the traditional manner.
+\end{abstract}
+
+\section{Introduction}
+Fritz in his long paper \cite{fritz} widely expanded and formalized the work laid out by Cho and Jacobs \cite{cho} and others.
+Here, he coins the name for and outlines the basic axioms of Markov categories, covers many examples of how different types of probabilistic and information theoretic constructions can be specified in this language, and develops or expands on several different notations for these specifications that can give different perspectives on the topic and have different advantages from each other.
+He argues that this wildly radical approach to probability can be beneficial in developing probabilistic programming languages.
+To expand on his point, there are well established programming languages, in particular those that employ the functional programming paradigm, that make heavy use of concepts from category theory.
+While languages such as Haskell have certain limitations, we can take advantage of some of the functional features employed in more flexible and popular languages such as python.
+
+We use abstract base classes to build an interface for a datatype that encodes a Markov category.
+When developing a new datatype that represents uncertainty, the user extends an interface whose abstract methods force one to implement the computational axioms of a Markov category.
+Once implemented, the datatype inherits routines, free to the user, that perform statistical computations such as marginalization, Bayesian inversion, and more complex tasks like filtering and estimation over uncertain dynamical systems.
+These routines are programmed using a notation that that employs infix operators built up from the implemented abstract methods.
+This notation is designed to evoke the familiar formulas for discrete probability.
+For example, the method for Bayesian inversion is encoded as
+
+\begin{lstlisting}[language=Python, frame=single]
+def bayes_invert(probability, conditional):
+    return (conditional * probability) / conditional.target
+\end{lstlisting}
+which is reminiscent of the formula for Bayesian inversion in discrete probability:
+\begin{equation}
+    P(x|y) = \frac{P(y|x)P(x)}{P(y)}
+\end{equation}
+The meaning behind this equation however is much more general in the context of the notation given by Fritz.
+When the datatype implementing this interface corresponds to Gaussian probability, this simple equation automatically derives the update law for the Kalman filter.
+
+While routines like this are invisible to the user, the notation is still made available for the user to program other expressions.
+
+Note: In developing this code, it turns out that we really didn't use much stuff from functional programming at all.
+
+While this auto-derived filter requires more lines of code in general and likely sees worse performance, we argue that the methodology for producing such code is more systematic, methodical, is broken up into smaller more fundamental components that are easier to handle, and requires less derivation on the part of the filter designer.
+We believe that this alternative to probability and probabilistic programming is more suitable for research into the design of novel filters.
+It also can be used to formalize more general constructions in other fields involving nondeterministic systems such as stochastic control theory.
+We emphasize that many constructions already known in literature may have the potential to be generalized to new exotic spaces in a programmatic way.
