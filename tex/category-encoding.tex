@@ -1,0 +1,32 @@
+\section{Encoding Markov Categories as an Interface}
+\subsection{Preliminaries: Markov Categories}
+As outlined by Fritz in \cite{fritz}, a Markov category is defined to be a symmetric monoidal category in which each object has a comonoidal structure.
+An extra axiom that will be beneficial for our purposes is the existence of conditionals.
+We will encode this as an operation on morphisms.
+
+To unpack this definition a little further, we should go into detail on the implications of each definition.
+First, a Markov category is a category.
+Mathematically, this is simply a class of objects with morphisms between them that form a directed graph upon which there is a certain algebra of paths.
+The important parts of the algebra are that each object must contain an identity morphism, and morphisms can compose.
+Concretely, objects can be used to represent structured spaces while morphisms are structure preserving transformations.
+A concrete category is a collection of such spaces with their transformations, typically given a name to represent the structure it encodes.
+In computer science applications, the objects in a category often represent data types, and morphisms are the methods, routines, or functions that take a certain data type as input and return another as output.
+This paradigm is not structured enough for our needs.
+To represent the structure of a category, it is sufficient to encode the structure of the morphisms only and to leave out the objects.
+We will do this here: we will create a datatype representing morphisms, whose data contained will be sufficient to evaluate the computation of applying the morphism as a function to elements of an object.
+For instance, in $\reals-\mathrm{FinVect}$, the category of finite dimensional vector spaces, the structure preserving transformations between objects are linear transformations.
+However, instead of making datatypes to represent vectors and working with functions that we must be careful to ensure follows linearity, it is fruitful to realize that every linear transformation has a matrix representation, and it is sufficient to forego the datatype for vectors and only create a datatype for matrices.
+To represent vectors, we can utilize the fact that morphisms coming out of a unital object in a monoidal category can act as elements.
+Thus, an $N$ dimensional vector is effectively an $N\times 1$ matrix.
+
+As such, we can make a datatype for a category that has a constructor for morphisms, 
+
+    \subsection{Preliminaries: Python Constructs}
+	\subsubsection{Infix Operators}
+	\subsubsection{Abstract Base Classes}
+
+    \subsection{Class Hierarchy}
+	\subsubsection{Category class}
+	\subsubsection{Monoidal class}
+	\subsubsection{Symmetric class}
+	\subsubsection{Markov class}
