@@ -10,6 +10,13 @@ Mathematically, this is simply a class of objects with morphisms between them th
 The important parts of the algebra are that each object must contain an identity morphism, and morphisms can compose.
 Concretely, objects can be used to represent structured spaces while morphisms are structure preserving transformations.
 A concrete category is a collection of such spaces with their transformations, typically given a name to represent the structure it encodes.
+
+\subsection{Preliminaries: Python Constructs}
+\subsubsection{Infix Operators}
+\subsubsection{Abstract Base Classes}
+
+\subsection{Class Hierarchy}
+\subsubsection{Category class}
 In computer science applications, the objects in a category often represent data types, and morphisms are the methods, routines, or functions that take a certain data type as input and return another as output.
 This paradigm is not structured enough for our needs.
 To represent the structure of a category, it is sufficient to encode the structure of the morphisms only and to leave out the objects.
@@ -19,14 +26,29 @@ However, instead of making datatypes to represent vectors and working with funct
 To represent vectors, we can utilize the fact that morphisms coming out of a unital object in a monoidal category can act as elements.
 Thus, an $N$ dimensional vector is effectively an $N\times 1$ matrix.
 
-As such, we can make a datatype for a category that has a constructor for morphisms, 
+As such, we can make a datatype for a category that has a constructor for morphisms, and need only to define methods that allow them to compose and that give us an identity for each object.
 
-    \subsection{Preliminaries: Python Constructs}
-	\subsubsection{Infix Operators}
-	\subsubsection{Abstract Base Classes}
+\begin{lstlisting}[caption=category.py, language=Python, frame=single]
+class Category(ABC):
+    @abstractmethod
+    def \_\_init\_\_(self, *args, **kwargs): pass
 
-    \subsection{Class Hierarchy}
-	\subsubsection{Category class}
-	\subsubsection{Monoidal class}
-	\subsubsection{Symmetric class}
-	\subsubsection{Markov class}
+    @abstractmethod
+    def compose(self, other): pass
+    def \_\_matmul\_\_(self,other): return self.compose(other)
+
+    @classmethod
+    @abstractmethod
+    def identity(cls, obj): pass
+
+    @property
+    @abstractmethod
+    def source(self): pass
+    @property
+    @abstractmethod
+    def target(self): pass
+\end{lstlisting}
+
+\subsubsection{Monoidal class}
+\subsubsection{Symmetric class}
+\subsubsection{Markov class}
