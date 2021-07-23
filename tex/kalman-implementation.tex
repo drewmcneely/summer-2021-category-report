@@ -2,12 +2,45 @@
     \subsection{Category methods}
 	\subsubsection{Compose and Identity}
 	\subsubsection{Source and Target}
-    \subsection{Symmetric Monoidal methods}
-	\subsubsection{bimap}
-	\subsubsection{unit}
-	\subsubsection{swap}
-	\subsubsection{Strictness and factoring methods}
-    \subsection{Markov methods}
-	\subsubsection{comultiplication}
-	\subsubsection{counit}
-	\subsubsection{condition}
+\subsection{Symmetric Monoidal methods}
+To implement the data type as a symmetric monoidal category, we need to implement \lstinline{bimap}, \lstinline{unit}, and \lstinline{swap}.
+
+
+\begin{lstlisting}[float, floatplacement=H, caption=Gaussian implementations of the bifunctor and swap isomorphism, label=kalman-monoidal, language=Python, frame=single]
+# StrictMonoidal
+def bimap(self,other):
+	matrix = block_diag(self.matrix, other.matrix)
+	mean = np.concatenate((self.mean, other.mean))
+	covariance = block_diag(self.covariance, other.covariance)
+	return Gaussian(matrix=matrix, mean=mean, covariance=covariance)
+
+# Symmetric
+@classmethod
+def swapper(cls, n1, n2):
+	z21 = np.zeros((n2,n1))
+	z12 = np.zeros((n1,n2))
+	i1 = np.identity(n1)
+	i2 = np.identity(n2)
+	return cls(matrix=np.block([[z21,i2],[i1,z12]]))
+
+@staticmethod
+def factor(xy, x): return xy - x
+\end{lstlisting}
+
+The \lstinline{bimap()} method simply returns the two given channels in parallel:
+\begin{equation}
+	(F,u,P) \otimes (G,v,Q) = \left(
+	\begin{bmatrix} F & \\ & G \end{bmatrix},
+	\begin{bmatrix} u \\ v \end{bmatrix},
+	\begin{bmatrix} P & \\ & Q \end{bmatrix}\right)
+\end{equation}
+
+The \lstinline{swapper()} method gives the symmetric isomorphism $\mathrm{swap}_{X,Y}: X\otimes Y \rightarrow Y\otimes X$ where
+\begin{equation}
+	\mathrm{swap}_{X,Y} = \left(
+	\begin{bmatrix} & I_Y \\ I_X & \end{bmatrix}, 0, 0\right)
+\end{equation}
+\subsection{Markov methods}
+\subsubsection{comultiplication}
+\subsubsection{counit}
+\subsubsection{condition}
