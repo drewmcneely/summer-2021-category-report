@@ -18,37 +18,47 @@ A concrete category is a collection of such spaces with their transformations, t
 \subsection{Class Hierarchy}
 \subsubsection{Category class}
 In computer science applications, the objects in a category often represent data types, and morphisms are the methods, routines, or functions that take a certain data type as input and return another as output.
-This paradigm is not structured enough for our needs.
-To represent the structure of a category, it is sufficient to encode the structure of the morphisms only and to leave out the objects.
-We will do this here: we will create a datatype representing morphisms, whose data contained will be sufficient to evaluate the computation of applying the morphism as a function to elements of an object.
-For instance, in $\reals-\mathrm{FinVect}$, the category of finite dimensional vector spaces, the structure preserving transformations between objects are linear transformations.
-However, instead of making datatypes to represent vectors and working with functions that we must be careful to ensure follows linearity, it is fruitful to realize that every linear transformation has a matrix representation, and it is sufficient to forego the datatype for vectors and only create a datatype for matrices.
-To represent vectors, we can utilize the fact that morphisms coming out of a unital object in a monoidal category can act as elements.
-Thus, an $N$ dimensional vector is effectively an $N\times 1$ matrix.
+This paradigm alone does not have enough structure for our needs.
+To represent the structure of a category, it is sufficient to encode a representation of the morphisms only and to leave out the objects.
+We will do this here: we will create a datatype representing morphisms, ie.\ stochastic kernels, and a datatype to use as an index for the objects (ie.\ spaces of probability distributions), but we will \emph{not} create a representation of probability distributions themselves.
+This will be expounded upon in 
 
 As such, we can make a datatype for a category that has a constructor for morphisms, and need only to define methods that allow them to compose and that give us an identity for each object.
 
-\begin{lstlisting}[caption=category.py, language=Python, frame=single]
+\begin{lstlisting}[caption=The category class within category.py, label=category-class, language=Python, frame=single]
 class Category(ABC):
-    @abstractmethod
+    \@abstractmethod
     def \_\_init\_\_(self, *args, **kwargs): pass
 
-    @abstractmethod
+    \@abstractmethod
     def compose(self, other): pass
     def \_\_matmul\_\_(self,other): return self.compose(other)
 
-    @classmethod
-    @abstractmethod
+    \@classmethod
+    \@abstractmethod
     def identity(cls, obj): pass
 
-    @property
-    @abstractmethod
+    \@property
+    \@abstractmethod
     def source(self): pass
-    @property
-    @abstractmethod
+    \@property
+    \@abstractmethod
     def target(self): pass
 \end{lstlisting}
 
+Listing \ref{category-class} shows how the Category class is implemented.
+We have abstract methods specifying that for any data type inheriting from `Category`, methods must be implemented for composition and identity.
+`compose` is a normal method, so the programmer should define it such that `G.compose(F)` will return their composition.
+The class also provides a wrapper for Python's matrix multiplication operator.
+The programmer will subsequently be able to call `G @ F` and get the same result.
+The identity method is a class method that takes in an object $X$ and returns $\mathrm{id}_X$.
+For the if the programmer defines a class called `MyCat` that inherits from `Category`, then identity would be called as `MyCat.identity(X)`.
+
+The remaining two property methods should be implemented to specify the domain and codomain of a kernel.
+
 \subsubsection{Monoidal class}
+
+Markov categories are monoidal categories, meaning that their objects act as a monoid.
+In particular, for every 
 \subsubsection{Symmetric class}
 \subsubsection{Markov class}
